@@ -10,10 +10,20 @@ const User = require("./models/User");
 
 const app = express();
 const server = http.createServer(app);
-const io = socketIo(server, { cors: { origin: "*" } });
 
-app.use(cors());
+// ✅ Set CORS properly for both Express and Socket.IO
+const corsOptions = {
+  origin: "https://mern-queue-app.vercel.app",  // Allow your frontend domain
+  methods: ["GET", "POST"],
+  credentials: true
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
+
+const io = socketIo(server, {
+  cors: corsOptions
+});
 
 // MongoDB Connection
 mongoose
