@@ -11,9 +11,9 @@ const User = require("./models/User");
 const app = express();
 const server = http.createServer(app);
 
-// ✅ Set CORS properly for both Express and Socket.IO
+// ✅ Set CORS properly for Express & Socket.IO
 const corsOptions = {
-  origin: "https://mern-queue-app.vercel.app",  // Allow your frontend domain
+  origin: "https://mern-queue-app.vercel.app",  // Allow frontend
   methods: ["GET", "POST"],
   credentials: true
 };
@@ -21,11 +21,21 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 
+// ✅ Handle WebSockets correctly under "/api/socket"
 const io = socketIo(server, {
   cors: corsOptions
 });
 
-// MongoDB Connection
+app.get("/", (req, res) => {
+  res.send("Queue App API is running...");
+});
+
+// ✅ API route for WebSockets
+app.use("/api/socket", (req, res) => {
+  res.send("WebSocket server is running...");
+});
+
+// ✅ MongoDB Connection
 mongoose
   .connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
@@ -36,7 +46,7 @@ mongoose
 
 let currentNumber = 0;
 
-// Socket.IO Logic
+// ✅ Socket.IO Logic
 io.on("connection", async (socket) => {
   console.log("New client connected:", socket.id);
 
@@ -52,7 +62,6 @@ io.on("connection", async (socket) => {
 
     await newEntry.save();
 
-    // Store user in User model for data storage
     await new User({
       name: newEntry.name,
       number: newEntry.number,
@@ -76,18 +85,12 @@ io.on("connection", async (socket) => {
     }
   });
 
-  // Remove a person from the queue
   socket.on("removeFromQueue", async (userId) => {
     const personToRemove = await Queue.findById(userId);
     if (personToRemove) {
       await Queue.deleteOne({ _id: userId });
 
-      // Adjust queue numbers
       const queue = await Queue.find().sort({ timestamp: 1 });
-      // for (let i = 0; i < queue.length; i++) {
-      //   queue[i].number = i + 1;
-      //   await queue[i].save();
-      // }
 
       io.emit("queueUpdate", { queue, currentNumber });
       console.log("Successfully removed.");
@@ -101,4 +104,6 @@ io.on("connection", async (socket) => {
   });
 });
 
-server.listen(5000, () => console.log("Server running on port 5000"));
+// ✅ Change the port to use environment variable for Vercel deployment
+const PORT = process.env.PORT || 5000;
+server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
