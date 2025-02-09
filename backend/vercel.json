@@ -14,15 +14,5 @@
   "routes": [
     { "src": "/socket.io/(.*)", "dest": "/index.js" },
     { "src": "/(.*)", "dest": "/" }
-  ],
-  "headers": [
-    {
-      "source": "/socket.io/(.*)",
-      "headers": [
-        { "key": "Access-Control-Allow-Origin", "value": "https://mern-queue-app.vercel.app" },
-        { "key": "Access-Control-Allow-Methods", "value": "GET, POST, OPTIONS" },
-        { "key": "Access-Control-Allow-Credentials", "value": "true" }
-      ]
-    }
   ]
 }
