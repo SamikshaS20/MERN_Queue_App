@@ -5,9 +5,11 @@ import LiveCount from "../components/LiveCount";
 import QueueList from "../components/QueueList";
 import JoinQueueForm from "../components/JoinQueueForm";
 
-const socket = io("http://localhost:5000");
+const socket = io(process.env.REACT_APP_BACKEND_URL);
 
 const UserPage = () => {
+  
+  console.log(process.env.REACT_APP_BACKEND_URL)
   const [queue, setQueue] = useState([]);
   const [joinQueue, setJoinQueue] = useState(false);
   const [currentNumber, setCurrentNumber] = useState(0);

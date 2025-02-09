@@ -5,7 +5,7 @@ import LiveCount from "../components/LiveCount";
 import JoinQueueForm from "../components/JoinQueueForm";
 import QueueList from "../components/QueueList";
 
-const socket = io("http://localhost:5000");
+const socket = io(process.env.REACT_APP_BACKEND_URL);
 
 const AdminPage = () => {
   const [queue, setQueue] = useState([]);
