@@ -2,7 +2,7 @@ import React from "react";
 import { io } from "socket.io-client";
 import { Trash2 } from "lucide-react"; // Importing trash icon
 
-const socket = io(process.env.BACKEND_URL);
+const socket = io(process.env.REACT_APP_BACKEND_URL);
 
 const QueueList = ({ queue, setQueue, setCurrentNumber, isAdmin }) => {
   const nextPerson = () => {
